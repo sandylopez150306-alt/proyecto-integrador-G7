@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Puntaje {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idPuntaje;
+    private Integer idPuntaje;
 
     @ManyToOne
     @JoinColumn(name = "sesion_id", nullable = false)
@@ -25,4 +25,7 @@ public class Puntaje {
 
     @Column(name = "fecha_decision")
     private LocalDateTime fechaDecision;
+
+    public Puntaje() {
+    }
 }

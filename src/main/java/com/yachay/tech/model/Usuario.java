@@ -14,8 +14,8 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
-    private int idUsuario;
+    @Column(name = "id_usuario", nullable = false)
+    private Integer idUsuario;
 
     @Column(name = "correo",nullable = false, unique = true, length = 150)
     private String correo;
@@ -41,5 +41,8 @@ public class Usuario {
 
     public enum Rol {
         ADMINISTRADOR, ANALISTA
+    }
+
+    public Usuario() {
     }
 }

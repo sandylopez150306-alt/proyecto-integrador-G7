@@ -13,7 +13,7 @@ public class Fase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_fase")
-    private int idFase;
+    private Integer idFase;
 
     @Column(name = "numero_fase", nullable = false, unique = true)
     private Integer numeroFase;
@@ -23,4 +23,7 @@ public class Fase {
 
     @Column(name = "desc_Fase", columnDefinition = "TEXT")
     private String descFase;
+
+    public Fase() {
+    }
 }

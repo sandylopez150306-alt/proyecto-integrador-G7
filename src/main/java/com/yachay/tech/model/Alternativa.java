@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Alternativa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAlternativa;
+    private Integer idAlternativa;
 
     @ManyToOne
     @JoinColumn(name = "fase_id", nullable = false)
@@ -28,4 +28,7 @@ public class Alternativa {
 
     @Column(name = "orden")
     private Integer orden;
+
+    public Alternativa() {
+    }
 }

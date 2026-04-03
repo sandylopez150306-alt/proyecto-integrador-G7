@@ -14,7 +14,7 @@ public class SesionSimulador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sesion")
-    private int idSesion;
+    private Integer idSesion;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -28,4 +28,7 @@ public class SesionSimulador {
 
     @Column(name = "puntaje_total")
     private Integer puntajeTotal = 0;
+
+    public SesionSimulador() {
+    }
 }
