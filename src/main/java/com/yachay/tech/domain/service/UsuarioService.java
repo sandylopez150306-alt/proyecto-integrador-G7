@@ -9,12 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 public class UsuarioService {
 
     @Autowired
     private IUsuarioRepository usuarioRepository;
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -34,7 +37,16 @@ public class UsuarioService {
         String passwordCifrada = passwordEncoder.encode(datos.contrasena());
         usuario.setContrasena(passwordCifrada);
 
-        return usuarioRepository.save(usuario);
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
+        emailService.enviarCorreo(
+                datos.correo(),
+                "Bienvenido a Yachay Pro",
+                "bienvenido",
+                Map.of("nombre", datos.nombres())
+        );
+
+        return usuarioGuardado;
     }
 }
 
