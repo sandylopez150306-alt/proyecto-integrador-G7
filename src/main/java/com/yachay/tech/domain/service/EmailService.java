@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -21,6 +22,7 @@ public class EmailService {
     @Autowired
     private TemplateEngine templateEngine;
 
+    @Async
     public void enviarCorreo(String destinatario, String asuntoCorreo, String nombrePlantilla, Map<String, Object> variables){
         try {
             Context context = new Context();

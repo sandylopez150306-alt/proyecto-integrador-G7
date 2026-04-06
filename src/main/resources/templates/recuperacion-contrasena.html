@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recuperación de Contraseña - Yachay-Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+</head>
+<body style="margin:0;padding:0;background-color:#e8edf2;font-family:'DM Sans',Arial,sans-serif;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+       style="background-color:#e8edf2;padding:40px 16px;">
+    <tr>
+        <td align="center">
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="max-width:560px;background:#ffffff;border-radius:4px;overflow:hidden;">
+
+                <!-- ── HEADER ─────────────────────────────────── -->
+                <tr>
+                    <td style="background-color:#1a3a5c;padding:40px 40px 36px;">
+
+                        <!-- Wordmark -->
+                        <p style="margin:0 0 28px;
+                        font-family:'DM Sans',Arial,sans-serif;
+                        font-size:11px;font-weight:500;
+                        color:rgba(255,255,255,0.4);
+                        letter-spacing:0.2em;text-transform:uppercase;">
+                            Yachay-Pro
+                        </p>
+
+                        <!-- Heading -->
+                        <p style="margin:0 0 6px;
+                        font-family:'Playfair Display',Georgia,serif;
+                        font-size:30px;font-weight:400;line-height:1.25;color:#ffffff;">
+                            Recuperación de<br/>
+                            <span>Contraseña</span>.
+                        </p>
+                        <p style="margin:0;font-size:12px;font-weight:300;
+                        color:rgba(255,255,255,0.45);letter-spacing:0.03em;">
+                            Hemos recibido una solicitud para acceder a tu cuenta
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- ── BODY ───────────────────────────────────── -->
+                <tr>
+                    <td style="padding:36px 40px 24px;">
+
+                        <div style="width:36px;height:2px;background:#1a3a5c;margin-bottom:24px;"></div>
+
+                        <p style="margin:0 0 16px;font-size:14px;font-weight:300;
+                        line-height:1.75;color:#4a5568;">
+                            Hola <span th:text="${nombre}">Usuario</span>,
+                        </p>
+                        
+                        <p style="margin:0 0 16px;font-size:14px;font-weight:300;
+                        line-height:1.75;color:#4a5568;">
+                            Hemos recibido una solicitud para restablecer la contraseña asociada a tu cuenta en Yachay-Pro. 
+                            Si no realizaste esta solicitud, puedes ignorar este correo de forma segura.
+                        </p>
+
+                        <!-- Highlight box -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                               style="margin:24px 0;background:#f4f7fb;
+                            border-left:3px solid #1a3a5c;border-radius:0 4px 4px 0;">
+                            <tr>
+                                <td style="padding:16px 20px;font-size:13px;font-weight:400;
+                             line-height:1.6;color:#2d4a6a;">
+                                    Este enlace expirará en 15 minutos por razones de seguridad.
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- CTA Button -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+                            <tr>
+                                <td style="background-color:#1a3a5c;border-radius:3px;">
+                                    <a th:href="${enlace}"
+                                       style="display:inline-block;padding:12px 28px;
+                              font-family:'DM Sans',Arial,sans-serif;
+                              font-size:13px;font-weight:500;letter-spacing:0.04em;
+                              color:#ffffff;text-decoration:none;">
+                                        Restablecer Contraseña &rarr;
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <!-- ── SIGNATURE ──────────────────────────────── -->
+                <tr>
+                    <td style="padding:20px 40px 32px;border-top:1px solid #eef1f5;">
+                        <p style="margin:0 0 4px;font-size:13px;font-weight:300;color:#718096;">
+                            Con gusto,
+                        </p>
+                        <p style="margin:0;font-size:13px;font-weight:500;color:#1a3a5c;">
+                            El equipo de Soporte de Yachay-Pro
+                        </p>
+                    </td>
+                </tr>
+
+                <!-- ── FOOTER BAR ──────────────────────────────── -->
+                <tr>
+                    <td style="background-color:#1a3a5c;padding:16px 40px;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.05em;">
+                                    &copy; 2026 Yachay-Pro
+                                </td>
+                                <td align="right">
+                                    <a href="#" style="font-size:11px;color:rgba(255,255,255,0.35);
+                                       text-decoration:none;margin-left:16px;">
+                                        Privacidad
+                                    </a>
+                                    <a href="#" style="font-size:11px;color:rgba(255,255,255,0.35);
+                                       text-decoration:none;margin-left:16px;">
+                                        Soporte
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
