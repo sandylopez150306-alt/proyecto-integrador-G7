@@ -87,13 +87,11 @@ public class SimuladorService {
             throw new NotFoundException("Una o más alternativas no existen.");
         }
 
-        // Validar que todas las alternativas pertenezcan a la misma fase
         var faseList = alternativas.stream().map(a -> a.getFase().getIdFase()).distinct().toList();
         if (faseList.size() > 1) {
             throw new BadRequestException("Las alternativas seleccionadas pertenecen a distintas fases.");
         }
 
-        // Validar que no hayamos tomado la decisión de esta fase previamente
         boolean yaDecidioEnFase = puntajeRepository.existsBySesionAndAlternativa_Fase(sesion, alternativas.get(0).getFase());
         if (yaDecidioEnFase) {
             throw new ConflictException("Ya se ha registrado una decisión para esta fase en la sesión actual.");
@@ -117,7 +115,7 @@ public class SimuladorService {
         sesionRepository.save(sesion);
 
         return new DecisionDtoResponse(
-                -1, // No hay un solo idPuntaje ahora, es un lote
+                -1,
                 feedbackBatch.toString().trim()
         );
     }
