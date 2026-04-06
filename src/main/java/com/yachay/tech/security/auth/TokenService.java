@@ -33,6 +33,20 @@ public class TokenService {
         }
     }
 
+    public String generarTokenRecuperacion(Usuario usuario) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            return JWT.create()
+                    .withIssuer("yachay tech")
+                    .withSubject(usuario.getCorreo())
+                    .withClaim("type", "RESET_PASSWORD")
+                    .withExpiresAt(LocalDateTime.now().plusMinutes(15).toInstant(ZoneOffset.of("-05:00")))
+                    .sign(algorithm);
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Error al generar el token de recuperacion", exception);
+        }
+    }
+
     public String getSubject(String token) {
         if (token == null) {
             throw new RuntimeException("Token es nulo");
@@ -47,6 +61,24 @@ public class TokenService {
 
             return verifier.getSubject();
 
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
+    }
+
+    public String validarTokenRecuperacion(String token) {
+        if (token == null) {
+            return null;
+        }
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            DecodedJWT verifier = JWT.require(algorithm)
+                    .withIssuer("yachay tech")
+                    .withClaim("type", "RESET_PASSWORD")
+                    .build()
+                    .verify(token);
+
+            return verifier.getSubject();
         } catch (JWTVerificationException exception) {
             return null;
         }

@@ -4,6 +4,8 @@ import com.yachay.tech.api.dto.LoginDtoRequest;
 import com.yachay.tech.api.dto.LoginDtoResponse;
 import com.yachay.tech.api.dto.UsuarioRegistroDtoRequest;
 import com.yachay.tech.api.dto.UsuarioRegistroDtoResponse;
+import com.yachay.tech.api.dto.ForgotPasswordDtoRequest;
+import com.yachay.tech.api.dto.ResetPasswordDtoRequest;
 import com.yachay.tech.api.exceptions.UnauthorizedException;
 import com.yachay.tech.security.auth.UsuarioPrincipal;
 import com.yachay.tech.data.model.Usuario;
@@ -56,6 +58,22 @@ public class AutenticacionController {
 
         } catch (AuthenticationException e) {
             throw new UnauthorizedException("Correo o contraseña incorrectos");
+        }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody @Valid ForgotPasswordDtoRequest request) {
+        usuarioService.solicitarRecuperacionContrasena(request.correo());
+        return ResponseEntity.ok("Si el correo se encuentra registrado, recibirá instrucciones para restablecer su contraseña.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody @Valid ResetPasswordDtoRequest request) {
+        try {
+            usuarioService.resetearContrasena(request.token(), request.nuevaContrasena());
+            return ResponseEntity.ok("Contraseña restablecida exitosamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
