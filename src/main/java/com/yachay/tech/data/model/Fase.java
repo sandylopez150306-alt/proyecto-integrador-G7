@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -23,6 +26,9 @@ public class Fase {
 
     @Column(name = "desc_Fase", columnDefinition = "TEXT")
     private String descFase;
+
+    @OneToMany(mappedBy = "fase", cascade = CascadeType.ALL)
+    private List<Alternativa> alternativas = new ArrayList<>();
 
     public Fase() {
     }

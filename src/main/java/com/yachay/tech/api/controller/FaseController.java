@@ -1,7 +1,7 @@
 package com.yachay.tech.api.controller;
 
 import com.yachay.tech.api.dto.AlternativaDtoResponse;
-import com.yachay.tech.api.dto.FaseLecturaDtoResponse;
+import com.yachay.tech.api.dto.FaseDtoResponse;
 import com.yachay.tech.domain.service.FaseService;
 import com.yachay.tech.domain.service.SimuladorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +20,15 @@ public class FaseController {
     @Autowired
     private SimuladorService simuladorService;
 
-    @GetMapping("/{numero}")
-    public ResponseEntity<FaseLecturaDtoResponse> obtenerFase(@PathVariable Integer numero) {
-        var response = faseService.obtenerContenidoLectura(numero);
+    @GetMapping("/{id}")
+    public ResponseEntity<FaseDtoResponse> obtenerFase(@PathVariable Integer id) {
+        var response = faseService.obtenerFasePorId(id);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{numero}/alternativas")
-    public ResponseEntity<List<AlternativaDtoResponse>> obtenerAlternativas(@PathVariable Integer numero) {
-        var alternativas = simuladorService.obtenerAlternativasPorFase(numero);
+    @GetMapping("/{id}/alternativas")
+    public ResponseEntity<List<AlternativaDtoResponse>> obtenerAlternativas(@PathVariable Integer id) {
+        var alternativas = simuladorService.obtenerAlternativasPorFase(id);
         return ResponseEntity.ok(alternativas);
     }
 }

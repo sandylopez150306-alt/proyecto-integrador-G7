@@ -7,7 +7,8 @@ public record AlternativaDtoResponse(
         String descAlternativa,
         Integer puntaje,
         String retroalimentacion,
-        Integer orden
+        Integer orden,
+        Integer faseSiguienteId
 ) {
     public AlternativaDtoResponse(Alternativa alternativa) {
         this(
@@ -15,7 +16,9 @@ public record AlternativaDtoResponse(
                 alternativa.getDescAlternativa(),
                 alternativa.getPuntaje(),
                 alternativa.getRetroalimentacion(),
-                alternativa.getOrden()
+                alternativa.getOrden(),
+                alternativa.getFaseSiguiente() != null ? alternativa.getFaseSiguiente().getIdFase() : null
+
         );
     }
 }

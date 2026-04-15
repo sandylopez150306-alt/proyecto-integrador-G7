@@ -1,8 +1,8 @@
-INSERT INTO fases (numero_fase, nom_fase, desc_fase) VALUES
+INSERT IGNORE INTO fases (numero_fase, nom_fase, desc_fase) VALUES
 (1, 'Identificación del Problema',
  'Yachay-Pro, una empresa líder en servicios tecnológicos educativos, ha experimentado un incremento alarmante del 35% en las cancelaciones de sus suscripciones durante el último trimestre. Este fenómeno ha generado una pérdida estimada de $2.4 millones en ingresos recurrentes y amenaza directamente la sostenibilidad del modelo de negocio.\n\nComo Analista de Datos asignado a este caso crítico, tu primera tarea es definir el método de investigación más adecuado para comprender las causas raíz de estas cancelaciones. La dirección ejecutiva necesita respuestas fundamentadas en datos antes de tomar decisiones estratégicas.\n\nDebes considerar que la empresa cuenta con una base de datos de más de 50,000 usuarios activos, registros de interacción con la plataforma, encuestas de satisfacción previas y datos del equipo de soporte técnico. El tiempo disponible para la fase de investigación es de 2 semanas.');
 
-INSERT INTO alternativas (fase_id, desc_alternativa, puntaje, retroalimentacion, orden) VALUES
+INSERT IGNORE INTO alternativas (fase_id, desc_alternativa, puntaje, retroalimentacion, orden) VALUES
 ((SELECT id_fase FROM fases WHERE numero_fase = 1),
  'Análisis Cuantitativo de Datos Históricos: Realizar un estudio estadístico profundo de los patrones de cancelación utilizando los registros de la base de datos, segmentando por tipo de usuario, antigüedad, frecuencia de uso y plan contratado.',
  100,

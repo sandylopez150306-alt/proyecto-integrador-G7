@@ -17,6 +17,10 @@ public class Alternativa {
     @JoinColumn(name = "fase_id", nullable = false)
     private Fase fase;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fase_siguiente_id")
+    private Fase faseSiguiente;
+
     @Column(name = "desc_alternativa", nullable = false, columnDefinition = "TEXT")
     private String descAlternativa;
 
