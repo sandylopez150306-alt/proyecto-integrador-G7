@@ -2,6 +2,7 @@ package com.yachay.tech.api.controller;
 
 import com.yachay.tech.api.dto.DecisionDtoRequest;
 import com.yachay.tech.api.dto.DecisionDtoResponse;
+import com.yachay.tech.api.dto.FaseDtoResponse;
 import com.yachay.tech.api.dto.SesionDtoResponse;
 import com.yachay.tech.data.model.Usuario;
 import com.yachay.tech.domain.service.SimuladorService;
@@ -33,13 +34,14 @@ public class SimuladorController {
     }
 
     @PostMapping("/sesiones/{sesionId}/decisiones")
-    public ResponseEntity<DecisionDtoResponse> registrarDecision(
+    public ResponseEntity<FaseDtoResponse> registrarDecision(
             @PathVariable Integer sesionId,
             @RequestBody @Valid DecisionDtoRequest request,
             Authentication authentication
     ) {
         Usuario usuario = (Usuario) authentication.getPrincipal();
-        var resultado = simuladorService.registrarDecision(sesionId, request.idsAlternativas(), usuario);
-        return ResponseEntity.ok(resultado);
+        FaseDtoResponse siguienteFase = simuladorService.registrarDecision(request, usuario);
+
+        return ResponseEntity.ok(siguienteFase);
     }
 }

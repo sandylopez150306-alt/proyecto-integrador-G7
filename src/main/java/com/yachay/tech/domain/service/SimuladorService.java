@@ -1,8 +1,6 @@
 package com.yachay.tech.domain.service;
 
-import com.yachay.tech.api.dto.AlternativaDtoResponse;
-import com.yachay.tech.api.dto.DecisionDtoResponse;
-import com.yachay.tech.api.dto.SesionDtoResponse;
+import com.yachay.tech.api.dto.*;
 import com.yachay.tech.api.exceptions.BadRequestException;
 import com.yachay.tech.api.exceptions.ConflictException;
 import com.yachay.tech.api.exceptions.ForbiddenException;
@@ -37,6 +35,9 @@ public class SimuladorService {
     @Autowired
     private IFaseRepository faseRepository;
 
+    @Autowired
+    private FaseService faseService;
+
     @Transactional
     public SesionDtoResponse crearORecuperarSesion(Usuario usuario) {
         SesionSimulador sesion = sesionRepository.findByUsuarioAndCompletadoFalse(usuario)
@@ -70,35 +71,29 @@ public class SimuladorService {
     }
 
     @Transactional
-    public DecisionDtoResponse registrarDecision(Integer sesionId, List<Integer> alternativaIds, Usuario usuario) {
-        SesionSimulador sesion = sesionRepository.findById(sesionId)
+    public FaseDtoResponse registrarDecision(DecisionDtoRequest request, Usuario usuario) {
+        SesionSimulador sesion = sesionRepository.findById(request.idSesion())
                 .orElseThrow(() -> new NotFoundException("Sesión no encontrada."));
-
         if (!sesion.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
             throw new ForbiddenException("No tiene permiso para modificar esta sesión.");
         }
-
         if (sesion.getCompletado()) {
             throw new BadRequestException("La sesión ya fue completada.");
         }
-
-        List<Alternativa> alternativas = alternativaRepository.findAllById(alternativaIds);
-        if (alternativas.size() != alternativaIds.size() || alternativas.isEmpty()) {
+        List<Alternativa> alternativas = alternativaRepository.findAllById(request.idsAlternativas());
+        if (alternativas.size() != request.idsAlternativas().size() || alternativas.isEmpty()) {
             throw new NotFoundException("Una o más alternativas no existen.");
         }
-
         var faseList = alternativas.stream().map(a -> a.getFase().getIdFase()).distinct().toList();
         if (faseList.size() > 1) {
             throw new BadRequestException("Las alternativas seleccionadas pertenecen a distintas fases.");
         }
-
         boolean yaDecidioEnFase = puntajeRepository.existsBySesionAndAlternativa_Fase(sesion, alternativas.get(0).getFase());
         if (yaDecidioEnFase) {
-            throw new ConflictException("Ya se ha registrado una decisión para esta fase en la sesión actual.");
+            throw new ConflictException("Ya se ha registrado una decisión para esta fase en esta sesión.");
         }
-
         int puntajeObtenidoBatch = 0;
-        StringBuilder feedbackBatch = new StringBuilder();
+        Integer siguienteFaseId = alternativas.get(0).getFaseSiguiente().getIdFase();
 
         for (var alternativa : alternativas) {
             Puntaje puntaje = new Puntaje();
@@ -106,17 +101,10 @@ public class SimuladorService {
             puntaje.setAlternativa(alternativa);
             puntaje.setFechaDecision(LocalDateTime.now());
             puntajeRepository.save(puntaje);
-
             puntajeObtenidoBatch += alternativa.getPuntaje();
-            feedbackBatch.append("• ").append(alternativa.getRetroalimentacion()).append("\n\n");
         }
-
         sesion.setPuntajeTotal(sesion.getPuntajeTotal() + puntajeObtenidoBatch);
         sesionRepository.save(sesion);
-
-        return new DecisionDtoResponse(
-                -1,
-                feedbackBatch.toString().trim()
-        );
+        return faseService.obtenerFasePorId(siguienteFaseId);
     }
 }
