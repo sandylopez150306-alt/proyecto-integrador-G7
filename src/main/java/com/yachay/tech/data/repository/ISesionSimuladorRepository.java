@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ISesionSimuladorRepository extends JpaRepository<SesionSimulador, Integer> {
     Optional<SesionSimulador> findByUsuarioAndCompletadoFalse(Usuario usuario);
+    java.util.List<SesionSimulador> findAllByUsuarioOrderByFchInicioDesc(Usuario usuario);
 }

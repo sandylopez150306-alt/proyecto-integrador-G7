@@ -27,7 +27,7 @@ public class SesionSimulador {
     private Boolean completado = false;
 
     @Column(name = "puntaje_total")
-    private Integer puntajeTotal = 0;
+    private Double puntajeTotal = 0.0;
 
     public SesionSimulador() {
     }

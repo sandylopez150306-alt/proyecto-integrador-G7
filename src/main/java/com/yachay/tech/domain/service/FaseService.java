@@ -12,9 +12,9 @@ public class FaseService {
     @Autowired
     private IFaseRepository faseRepository;
 
-    public FaseDtoResponse obtenerFasePorId(Integer id) {
-        Fase fase = faseRepository.findById(id)
-                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Fase no encontrada"));
+    public FaseDtoResponse obtenerFasePorId(Integer numeroFase) {
+        Fase fase = faseRepository.findByNumeroFase(numeroFase)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Fase no encontrada con número: " + numeroFase));
 
         return new FaseDtoResponse(fase);
     }

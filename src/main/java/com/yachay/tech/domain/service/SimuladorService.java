@@ -5,10 +5,7 @@ import com.yachay.tech.api.exceptions.BadRequestException;
 import com.yachay.tech.api.exceptions.ConflictException;
 import com.yachay.tech.api.exceptions.ForbiddenException;
 import com.yachay.tech.api.exceptions.NotFoundException;
-import com.yachay.tech.data.model.Alternativa;
-import com.yachay.tech.data.model.Puntaje;
-import com.yachay.tech.data.model.SesionSimulador;
-import com.yachay.tech.data.model.Usuario;
+import com.yachay.tech.data.model.*;
 import com.yachay.tech.data.repository.IAlternativaRepository;
 import com.yachay.tech.data.repository.IFaseRepository;
 import com.yachay.tech.data.repository.IPuntajeRepository;
@@ -46,7 +43,7 @@ public class SimuladorService {
                     nueva.setUsuario(usuario);
                     nueva.setFchInicio(LocalDateTime.now());
                     nueva.setCompletado(false);
-                    nueva.setPuntajeTotal(0);
+                    nueva.setPuntajeTotal(0.0);
                     return sesionRepository.save(nueva);
                 });
 
@@ -88,12 +85,22 @@ public class SimuladorService {
         if (faseList.size() > 1) {
             throw new BadRequestException("Las alternativas seleccionadas pertenecen a distintas fases.");
         }
-        boolean yaDecidioEnFase = puntajeRepository.existsBySesionAndAlternativa_Fase(sesion, alternativas.get(0).getFase());
-        if (yaDecidioEnFase) {
-            throw new ConflictException("Ya se ha registrado una decisión para esta fase en esta sesión.");
+        Fase faseActual = alternativas.get(0).getFase();
+        String grupo = alternativas.get(0).getGrupo();
+
+        if (grupo != null && !"".equals(grupo.trim())) {
+            if (puntajeRepository.existsBySesionAndAlternativa_Grupo(sesion, grupo)) {
+                throw new ConflictException("Ya se ha registrado una decisión para el grupo " + grupo + " en esta sesión.");
+            }
+        } else {
+            boolean yaDecidioEnFase = puntajeRepository.existsBySesionAndAlternativa_Fase(sesion, faseActual);
+            if (yaDecidioEnFase) {
+                throw new ConflictException("Ya se ha registrado una decisión para esta fase en esta sesión.");
+            }
         }
-        int puntajeObtenidoBatch = 0;
-        Integer siguienteFaseId = alternativas.get(0).getFaseSiguiente().getIdFase();
+        double puntajeObtenidoBatch = 0.0;
+        var faseSiguiente = alternativas.get(0).getFaseSiguiente();
+        Integer siguienteFaseId = (faseSiguiente != null) ? faseSiguiente.getIdFase() : faseActual.getIdFase();
 
         for (var alternativa : alternativas) {
             Puntaje puntaje = new Puntaje();
@@ -105,6 +112,54 @@ public class SimuladorService {
         }
         sesion.setPuntajeTotal(sesion.getPuntajeTotal() + puntajeObtenidoBatch);
         sesionRepository.save(sesion);
-        return faseService.obtenerFasePorId(siguienteFaseId);
+        return obtenerFaseActual(usuario);
+    }
+
+    public FaseDtoResponse obtenerFaseActual(Usuario usuario) {
+        SesionSimulador sesion = sesionRepository.findByUsuarioAndCompletadoFalse(usuario)
+                .orElseThrow(() -> new NotFoundException("No hay sesión activa."));
+
+        long gruposFase1 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 1);
+        if (gruposFase1 < 3) {
+            return new FaseDtoResponse(faseRepository.findByNumeroFase(1).get());
+        }
+
+        long gruposFase2 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 2);
+        if (gruposFase2 < 2) {
+            return new FaseDtoResponse(faseRepository.findByNumeroFase(2).get());
+        }
+
+        long gruposFase3 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 3);
+        if (gruposFase3 < 3) {
+            return new FaseDtoResponse(faseRepository.findByNumeroFase(3).get());
+        }
+
+        sesion.setCompletado(true);
+        sesionRepository.save(sesion);
+        return null;
+    }
+
+    public HistorialSesionDtoResponse obtenerHistorial(Usuario usuario) {
+        var sesiones = sesionRepository.findAllByUsuarioOrderByFchInicioDesc(usuario);
+        if (sesiones.isEmpty()) throw new NotFoundException("No hay historial.");
+        
+        SesionSimulador ultima = sesiones.get(0);
+        var puntajes = puntajeRepository.findBySesion(ultima);
+        
+        List<DetalleDecisionDtoResponse> detalles = puntajes.stream()
+                .map(p -> new DetalleDecisionDtoResponse(
+                        p.getAlternativa().getFase().getNomFase(),
+                        p.getAlternativa().getDescAlternativa(),
+                        p.getAlternativa().getRetroalimentacion(),
+                        p.getAlternativa().getPuntaje()
+                )).toList();
+
+        return new HistorialSesionDtoResponse(
+                ultima.getIdSesion(),
+                ultima.getFchInicio(),
+                ultima.getCompletado(),
+                ultima.getPuntajeTotal(),
+                detalles
+        );
     }
 }
