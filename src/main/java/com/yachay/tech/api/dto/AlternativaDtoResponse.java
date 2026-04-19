@@ -5,10 +5,11 @@ import com.yachay.tech.data.model.Alternativa;
 public record AlternativaDtoResponse(
         Integer idAlternativa,
         String descAlternativa,
-        Integer puntaje,
+        Double puntaje,
         String retroalimentacion,
         Integer orden,
-        Integer faseSiguienteId
+        Integer faseSiguienteId,
+        String grupo
 ) {
     public AlternativaDtoResponse(Alternativa alternativa) {
         this(
@@ -17,8 +18,8 @@ public record AlternativaDtoResponse(
                 alternativa.getPuntaje(),
                 alternativa.getRetroalimentacion(),
                 alternativa.getOrden(),
-                alternativa.getFaseSiguiente() != null ? alternativa.getFaseSiguiente().getIdFase() : null
-
+                alternativa.getFaseSiguiente() != null ? alternativa.getFaseSiguiente().getIdFase() : null,
+                alternativa.getGrupo()
         );
     }
 }

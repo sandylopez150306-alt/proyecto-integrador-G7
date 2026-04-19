@@ -40,7 +40,7 @@ public class Usuario  {
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
     public enum Rol {
-        ADMINISTRADOR, ANALISTA
+        ADMINISTRADOR, ANALISTA, DOCENTE
     }
 
     public Usuario() {

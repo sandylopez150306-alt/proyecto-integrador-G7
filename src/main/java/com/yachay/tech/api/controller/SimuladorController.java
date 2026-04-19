@@ -1,10 +1,8 @@
 package com.yachay.tech.api.controller;
 
-import com.yachay.tech.api.dto.DecisionDtoRequest;
-import com.yachay.tech.api.dto.DecisionDtoResponse;
-import com.yachay.tech.api.dto.FaseDtoResponse;
-import com.yachay.tech.api.dto.SesionDtoResponse;
+import com.yachay.tech.api.dto.*;
 import com.yachay.tech.data.model.Usuario;
+import com.yachay.tech.domain.service.ChatSimuladorService;
 import com.yachay.tech.domain.service.SimuladorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,9 @@ public class SimuladorController {
 
     @Autowired
     private SimuladorService simuladorService;
+
+    @Autowired
+    private ChatSimuladorService chatSimuladorService;
 
     @PostMapping("/sesiones")
     public ResponseEntity<SesionDtoResponse> crearSesion(Authentication authentication) {
@@ -43,5 +44,28 @@ public class SimuladorController {
         FaseDtoResponse siguienteFase = simuladorService.registrarDecision(request, usuario);
 
         return ResponseEntity.ok(siguienteFase);
+    }
+
+    @GetMapping("/fase-actual")
+    public ResponseEntity<FaseDtoResponse> obtenerFaseActual(Authentication authentication) {
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+        var fase = simuladorService.obtenerFaseActual(usuario);
+        return ResponseEntity.ok(fase);
+    }
+
+    @GetMapping("/historial")
+    public ResponseEntity<HistorialSesionDtoResponse> obtenerHistorial(Authentication authentication) {
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+        var historial = simuladorService.obtenerHistorial(usuario);
+        return ResponseEntity.ok(historial);
+    }
+
+    @PostMapping("/chat")
+    public ResponseEntity<ChatSimuladorResponse> chat(
+            @RequestBody ChatSimuladorRequest request,
+            Authentication authentication
+    ) {
+        var respuesta = chatSimuladorService.chat(request);
+        return ResponseEntity.ok(respuesta);
     }
 }

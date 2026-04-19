@@ -25,13 +25,16 @@ public class Alternativa {
     private String descAlternativa;
 
     @Column(name = "puntaje", nullable = false)
-    private Integer puntaje;
+    private Double puntaje;
 
     @Column(name = "retroalimentacion", columnDefinition = "TEXT")
     private String retroalimentacion;
 
     @Column(name = "orden")
     private Integer orden;
+
+    @Column(name = "grupo", length = 10)
+    private String grupo;
 
     public Alternativa() {
     }
