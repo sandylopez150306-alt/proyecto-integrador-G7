@@ -60,10 +60,6 @@ public class SimuladorController {
         return ResponseEntity.ok(historial);
     }
 
-    /**
-     * AI coaching chatbot for the final report.
-     * The frontend sends the user's message and the report context (stringified).
-     */
     @PostMapping("/chat")
     public ResponseEntity<ChatSimuladorResponse> chat(
             @RequestBody ChatSimuladorRequest request,

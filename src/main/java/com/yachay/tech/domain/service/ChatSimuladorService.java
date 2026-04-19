@@ -10,10 +10,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service that integrates with the Groq API to provide the simulator's
- * AI coaching chatbot. Uses RestTemplate (no WebFlux dependency needed).
- */
 @Service
 public class ChatSimuladorService {
 
@@ -42,9 +38,7 @@ public class ChatSimuladorService {
         this.restTemplate = new RestTemplate();
     }
 
-    /**
-     * Sends the user's message to Groq with the simulation report as context.
-     */
+
     public ChatSimuladorResponse chat(ChatSimuladorRequest request) {
         String systemWithContext = SYSTEM_PROMPT + "\n\nCONTEXTO DEL INFORME DEL ESTUDIANTE:\n" + request.contextoInforme();
 
