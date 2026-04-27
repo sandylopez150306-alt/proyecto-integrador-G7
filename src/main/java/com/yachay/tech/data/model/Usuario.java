@@ -39,6 +39,9 @@ public class Usuario  {
     @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
+    @Column(name = "ultima_fase")
+    private Integer ultimaFase = 0;
+
     public enum Rol {
         ADMINISTRADOR, ANALISTA, DOCENTE
     }

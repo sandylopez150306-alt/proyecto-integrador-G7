@@ -43,8 +43,8 @@ public class AutenticacionController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDtoRequest datos) {
         try {
-           Authentication authToken = new UsernamePasswordAuthenticationToken(datos.correo(), datos.contrasena());
-           var usuarioAutenticado = authenticationManager.authenticate(authToken);
+            Authentication authToken = new UsernamePasswordAuthenticationToken(datos.correo(), datos.contrasena());
+            var usuarioAutenticado = authenticationManager.authenticate(authToken);
 
             UsuarioPrincipal principal = (UsuarioPrincipal) usuarioAutenticado.getPrincipal();
             Usuario usuario = principal.getUsuario();
@@ -53,7 +53,8 @@ public class AutenticacionController {
                     jwtToken,
                     "Bearer",
                     usuario.getNombres(),
-                    usuario.getRol().name()
+                    usuario.getRol().name(),
+                    usuario.getUltimaFase()
             ));
 
         } catch (AuthenticationException e) {

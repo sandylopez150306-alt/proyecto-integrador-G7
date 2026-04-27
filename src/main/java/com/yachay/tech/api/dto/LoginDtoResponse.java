@@ -4,5 +4,6 @@ public record LoginDtoResponse(
         String token,
         String tipo,
         String nombres,
-        String rol
+        String rol,
+        Integer ultimaFase
 ) {}

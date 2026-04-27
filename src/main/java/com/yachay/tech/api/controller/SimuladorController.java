@@ -4,6 +4,7 @@ import com.yachay.tech.api.dto.*;
 import com.yachay.tech.data.model.Usuario;
 import com.yachay.tech.domain.service.ChatSimuladorService;
 import com.yachay.tech.domain.service.SimuladorService;
+import com.yachay.tech.security.auth.UsuarioPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -68,4 +69,21 @@ public class SimuladorController {
         var respuesta = chatSimuladorService.chat(request);
         return ResponseEntity.ok(respuesta);
     }
+
+    @PostMapping("/cerrar-fase")
+    public ResponseEntity<?> cerrarFase(@RequestBody @Valid AvanceDtoRequest datos, Authentication authentication) {
+        Usuario usuario = (Usuario) authentication.getPrincipal();
+
+        if (datos.faseAEnviar() <= usuario.getUltimaFase()) {
+            return ResponseEntity.status(403)
+                    .body(new MensajeResponse("Acción bloqueada: No puedes modificar la fase " + datos.faseAEnviar()));
+        }
+
+        usuario.setUltimaFase(datos.faseAEnviar());
+        simuladorService.actualizarProgresoUsuario(usuario);
+        return ResponseEntity.ok(new MensajeResponse("¡Éxito! La fase " + datos.faseAEnviar() + " ha sido guardada correctamente."));
+    }
+
+    record MensajeResponse(String mensaje) {}
+
 }

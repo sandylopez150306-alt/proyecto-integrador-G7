@@ -6,10 +6,7 @@ import com.yachay.tech.api.exceptions.ConflictException;
 import com.yachay.tech.api.exceptions.ForbiddenException;
 import com.yachay.tech.api.exceptions.NotFoundException;
 import com.yachay.tech.data.model.*;
-import com.yachay.tech.data.repository.IAlternativaRepository;
-import com.yachay.tech.data.repository.IFaseRepository;
-import com.yachay.tech.data.repository.IPuntajeRepository;
-import com.yachay.tech.data.repository.ISesionSimuladorRepository;
+import com.yachay.tech.data.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +31,9 @@ public class SimuladorService {
 
     @Autowired
     private FaseService faseService;
+
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
 
     @Transactional
     public SesionDtoResponse crearORecuperarSesion(Usuario usuario) {
@@ -161,5 +161,8 @@ public class SimuladorService {
                 ultima.getPuntajeTotal(),
                 detalles
         );
+    }
+    public void actualizarProgresoUsuario(Usuario usuario) {
+        usuarioRepository.save(usuario);
     }
 }

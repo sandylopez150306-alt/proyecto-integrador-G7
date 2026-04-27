@@ -1,0 +1,2 @@
+ALTER TABLE usuarios
+ADD COLUMN ultima_fase INT DEFAULT 0;
