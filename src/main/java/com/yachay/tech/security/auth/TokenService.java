@@ -26,10 +26,23 @@ public class TokenService {
                     .withIssuer("yachay tech")
                     .withSubject(usuario.getCorreo())
                     .withClaim("id", usuario.getIdUsuario())
+                    .withClaim("rol", usuario.getRol().name())
                     .withExpiresAt(generarFechaExpiracion())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new RuntimeException("Error al generar el token JWT", exception);
+        }
+    }
+    public String getClaimRol(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            return JWT.require(algorithm)
+                    .withIssuer("yachay tech")
+                    .build()
+                    .verify(token)
+                    .getClaim("rol").asString();
+        } catch (JWTVerificationException exception) {
+            return null;
         }
     }
 
@@ -51,10 +64,9 @@ public class TokenService {
         if (token == null) {
             throw new RuntimeException("Token es nulo");
         }
-        DecodedJWT verifier = null;
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-            verifier = JWT.require(algorithm)
+            DecodedJWT verifier = JWT.require(algorithm)
                     .withIssuer("yachay tech")
                     .build()
                     .verify(token);

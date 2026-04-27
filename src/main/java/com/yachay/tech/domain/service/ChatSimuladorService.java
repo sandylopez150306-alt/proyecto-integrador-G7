@@ -29,7 +29,7 @@ public class ChatSimuladorService {
             No inventes datos del informe. Solo usa el contexto que el estudiante te provea.
             """;
 
-    @Value("${GROQ_API_KEY}")
+    @Value("${api.groq.key:fallback_key}")
     private String groqApiKey;
 
     private final RestTemplate restTemplate;
