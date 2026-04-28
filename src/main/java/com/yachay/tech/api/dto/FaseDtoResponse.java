@@ -23,4 +23,13 @@ public record FaseDtoResponse(
                                 .toList() : List.of()
         );
     }
+    public FaseDtoResponse(Fase fase, List<AlternativaDtoResponse> alternativasAleatorias) {
+        this(
+                fase.getIdFase(),
+                fase.getNumeroFase(),
+                fase.getNomFase(),
+                fase.getDescFase(),
+                alternativasAleatorias
+        );
+    }
 }

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -119,24 +121,35 @@ public class SimuladorService {
         SesionSimulador sesion = sesionRepository.findByUsuarioAndCompletadoFalse(usuario)
                 .orElseThrow(() -> new NotFoundException("No hay sesión activa."));
 
+        Fase faseActual;
+
         long gruposFase1 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 1);
         if (gruposFase1 < 3) {
-            return new FaseDtoResponse(faseRepository.findByNumeroFase(1).get());
+            faseActual = faseRepository.findByNumeroFase(1)
+                    .orElseThrow(() -> new NotFoundException("Fase 1 no configurada"));
+        } else {
+            long gruposFase2 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 2);
+            if (gruposFase2 < 2) {
+                faseActual = faseRepository.findByNumeroFase(2)
+                        .orElseThrow(() -> new NotFoundException("Fase 2 no configurada"));
+            } else {
+                long gruposFase3 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 3);
+                if (gruposFase3 < 3) {
+                    faseActual = faseRepository.findByNumeroFase(3)
+                            .orElseThrow(() -> new NotFoundException("Fase 3 no configurada"));
+                } else {
+                    sesion.setCompletado(true);
+                    sesionRepository.save(sesion);
+                    return null;
+                }
+            }
         }
-
-        long gruposFase2 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 2);
-        if (gruposFase2 < 2) {
-            return new FaseDtoResponse(faseRepository.findByNumeroFase(2).get());
-        }
-
-        long gruposFase3 = puntajeRepository.countDistinctGrupoBySesionAndFaseNumero(sesion, 3);
-        if (gruposFase3 < 3) {
-            return new FaseDtoResponse(faseRepository.findByNumeroFase(3).get());
-        }
-
-        sesion.setCompletado(true);
-        sesionRepository.save(sesion);
-        return null;
+        List<Alternativa> listaParaDesordenar = new ArrayList<>(faseActual.getAlternativas());
+        Collections.shuffle(listaParaDesordenar);
+        List<AlternativaDtoResponse> alternativasDto = listaParaDesordenar.stream()
+                .map(AlternativaDtoResponse::new)
+                .toList();
+        return new FaseDtoResponse(faseActual, alternativasDto);
     }
 
     public HistorialSesionDtoResponse obtenerHistorial(Usuario usuario) {
