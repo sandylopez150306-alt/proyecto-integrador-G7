@@ -20,10 +20,10 @@ Aquí no hay respuestas incorrectas, hay decisiones con distintos impactos.
 * Spring Security (JWT)
 
 ### Base de Datos
-* MySQL — modelado relacional y flujos dinámicos
+* MySQL
 
 ### Pruebas de API
-* Bruno
+* Bruno/Postman
 
 ### Herramientas
 * Trello: gestión ágil (Kanban)
